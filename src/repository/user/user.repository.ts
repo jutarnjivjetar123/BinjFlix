@@ -205,8 +205,14 @@ export default class UserRepository {
       });
   }
 
+  /**
+   * Retrieves the login data for a user by their email address.
+   *
+   * @param email - The email address of the user to retrieve login data for.
+   * @returns A Promise that resolves to an object containing the user's login data, including the User, UserEmail, UserPassword, UserSalt, and UserPublicId entities. If no user is found with the given email, an empty object is returned.
+   */
   public static async getUserLoginDataByEmail(email: string): Promise<any> {
-    const loginData = await DatabaseConnection.getRepository(User)
+    return await DatabaseConnection.getRepository(User)
       .createQueryBuilder("user")
       .innerJoinAndSelect(
         UserEmail,
@@ -222,6 +228,11 @@ export default class UserRepository {
         UserSalt,
         "userSalt",
         "user.userId = userSalt.user.userId"
+      )
+      .innerJoinAndSelect(
+        UserPublicId,
+        "userPublicId",
+        "user.userId = userPublicId.user.userId"
       )
       .where("userEmail.email = :email", { email: email })
       .getRawOne()
@@ -256,8 +267,5 @@ export default class UserRepository {
         );
         return null;
       });
-    console.log(loginData);
-    console.log(loginData === null);
-    return loginData;
   }
 }

@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import * as jwt from "jsonwebtoken";
 
 import ReturnObjectHandler from "../utilities/return.handler.utilities";
 import User from "../models/user/user.model";
@@ -59,10 +60,36 @@ export default class UserController {
       });
     }
 
+    //Create token
+
+    let token = null;
+    try {
+      token = jwt.sign(
+        {
+          value: loginResult.getReturnValue().userPublicId.userPublicId,
+        },
+        process.env.TOKEN_SECRET_KEY,
+        {
+          expiresIn: "1h",
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send({
+        type: "system error",
+        message:
+          "An unexpected error occurred, we could not login you right now",
+        data: {},
+        timestamp: new Date().toUTCString(),
+      });
+    }
+    res.setHeader("Authorization", `Bearer ${token}`);
     return res.status(200).send({
       type: "success",
-      message: "Login successful",
-      data: {},
+      message: loginResult.getMessage(),
+      data: {
+        token,
+      },
       timestamp: new Date().toUTCString(),
     });
   }

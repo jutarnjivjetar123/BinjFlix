@@ -128,6 +128,13 @@ export default class UserService {
     );
   }
 
+  /**
+   * Logs in a user by their email address and password.
+   *
+   * @param email - The email address of the user to log in.
+   * @param password - The password of the user to log in.
+   * @returns A `ReturnObjectHandler` with the login status and user data, or an error message and status code.
+   */
   public static async loginUserByEmail(email: string, password: string) {
     if (!validator.isEmail(email)) {
       return new ReturnObjectHandler("Invalid email address", null, 400);
@@ -144,6 +151,7 @@ export default class UserService {
       );
     }
 
+    //Check if the retrieved database data has any fields in the given object
     if (Object.keys(loginData).length < 1) {
       return new ReturnObjectHandler("User not found", null, 404);
     }
@@ -153,12 +161,63 @@ export default class UserService {
       password,
       loginData["userPassword_hash"]
     );
-    console.log("Is password correct: " + isPasswordCorrect);
+
     if (!isPasswordCorrect) {
       return new ReturnObjectHandler("Invalid password", null, 401);
     }
 
     console.log(loginData);
-    return new ReturnObjectHandler("User found", "TEST DATA", 200);
+    //Attempt to order data into corresponding objects
+    const assignValues = (
+      result: any,
+      object: any,
+      prefix: string,
+      separator: string = "_"
+    ) => {
+      Object.keys(result).forEach((key) => {
+        if (key.startsWith(`${prefix}${separator}`)) {
+          const attribute = key.replace(`${prefix}${separator}`, "");
+          console.log(attribute);
+          object[attribute] = result[key];
+        }
+      });
+    };
+
+    const user = new User();
+    const userEmail = new UserEmail();
+    const userPassword = new UserPassword();
+    const userSalt = new UserSalt();
+    const userPublicId = new UserPublicId();
+
+    assignValues(loginData, user, "user");
+    assignValues(loginData, userEmail, "userEmail");
+    assignValues(loginData, userPassword, "userPassword");
+    assignValues(loginData, userSalt, "userSalt");
+    assignValues(loginData, userPublicId, "userPublicId");
+    console.log(user);
+    const returnData = {
+      user,
+      userEmail,
+      userPassword,
+      userSalt,
+      userPublicId,
+    };
+    console.log(returnData);
+    return new ReturnObjectHandler("User logged in", returnData, 200);
+  }
+
+  private static assignValues(
+    unorderedObject: any,
+    returnObject: any,
+    prefix: string,
+    separator: string = "_"
+  ): any {
+    Object.keys(unorderedObject).forEach((key) => {
+      if (key.startsWith(prefix)) {
+        const attribute = key.replace(`${prefix}${separator}`, "");
+        returnObject[attribute] = unorderedObject[key];
+      }
+    });
+    return returnObject;
   }
 }
