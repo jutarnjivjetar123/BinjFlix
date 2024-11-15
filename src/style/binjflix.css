@@ -1,0 +1,81 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: black;
+}
+
+main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 95%;
+}
+
+header > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-right: 32px;
+  gap: 12px;
+  font-weight: bold;
+}
+
+.languageSelect {
+  background-color: black;
+  color: white;
+  border-radius: 32px;
+  padding: 8px;
+}
+
+button {
+  padding: 8px 16px;
+  color: black;
+  background-color: red;
+  border: none;
+  border-radius: 32px;
+  cursor: pointer;
+}
+
+.hero {
+  width: 100%;
+  padding: 5%;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  background-image: url("../images/BA TRIFECTA Nov 11 2024.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 12px 12px 8px 8px;
+  border: 1px solid white;
+  text-align: center;
+}
+
+.hero h1 {
+  font-weight: bolder;
+  text-wrap: wrap;
+  text-align: center;
+}
+.hero h3 {
+  color: gray;
+}
